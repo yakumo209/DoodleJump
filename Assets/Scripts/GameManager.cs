@@ -17,6 +17,8 @@ public class GameManager : MonoSingleton<GameManager>
     private float currentY = -4.3f;
     public GameObject tilePrefab;
     public GameSetting advance;
+    public GameObject floor;
+    public GameState gameState = GameState.Paused;
     
     protected override void Awake()
     {
@@ -31,20 +33,11 @@ public class GameManager : MonoSingleton<GameManager>
         //generate tile
         for (int i = 0; i < initialSize; i++)
         {
-            GenerateTile();
+             GenerateTile();
         }
     }
 
-    private void GenerateTilePool()
-    {
-        for (int i = 0; i < initialSize; i++)
-        {
-            GameObject go1 = Instantiate(tilePrefab, transform);
-            go1.SetActive(false);
-            go1.name = i.ToString();
-            tilePool.Enqueue(go1);
-        }
-    }
+    
 
     private void GenerateTile()
     {
@@ -130,6 +123,16 @@ public class GameManager : MonoSingleton<GameManager>
             return -1;
         }
     }
+    private void GenerateTilePool()
+    {
+        for (int i = 0; i < initialSize; i++)
+        {
+            GameObject go1 = Instantiate(tilePrefab, transform);
+            go1.SetActive(false);
+            go1.name = i.ToString();
+            tilePool.Enqueue(go1);
+        }
+    }
     public GameObject GetInactiveObject(ObjectType type)
     {
         switch (type)
@@ -165,6 +168,52 @@ public class GameManager : MonoSingleton<GameManager>
         sum += advance.movingHorizontally.weight;
         totalSum = sum;
     }
+
+    public void AddInActiveObjectToPool(GameObject go,ObjectType type)
+    {
+        go.SetActive(false);
+        switch (type)
+        {
+            case ObjectType.Tile:
+                tilePool.Enqueue(go);
+                CreateTile();
+                break;
+            case ObjectType.Item:
+                itemPool.Enqueue(go);
+                break;
+            case ObjectType.Coin:
+                coinPool.Enqueue(go);
+                break;
+            case ObjectType.Enemy:
+                enemyPool.Enqueue(go);
+                break;
+            case ObjectType.Bullet:
+                bulletPool.Enqueue(go);
+                break;
+            default:
+                break;
+        }
+    }
+
+    void CreateTile()
+    {
+        if (gameState!=GameState.Gameover)
+        {
+            GenerateTile();
+            //添加道具
+            //难度曲线
+            //分数
+        }
+    }
+
+    public void GameOver()
+    {
+        if (gameState != GameState.Gameover)
+        {
+            gameState = GameState.Gameover;
+            //save ui...
+        }
+    }
 }
 
 public enum ObjectType
@@ -174,4 +223,10 @@ public enum ObjectType
     Coin,
     Enemy,
     Bullet,
+}
+public enum GameState
+{
+    Paused,
+    Running,
+    Gameover,
 }

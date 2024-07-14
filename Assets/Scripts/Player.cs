@@ -21,36 +21,43 @@ public class Player : MonoBehaviour
         {
             Jump(1);
         }
+
+        if (other.CompareTag("Floor"))
+        {
+            GameManager.Instance.GameOver();
+        }
     }
 
     public void Jump(float x)
     {
         GetComponent<Rigidbody2D>().velocity=Vector2.zero;
         GetComponent<Rigidbody2D>().AddForce(new Vector2(0,12*x),ForceMode2D.Impulse);
-        print("jump");
     }
 
     private Vector3 move;
     private void Update()
     {
-        move.x = Input.GetAxis("Horizontal") * Time.deltaTime * moveSpeed;
-        if (move.x>0)
+        if (GameManager.Instance.gameState==GameState.Running)
         {
-            transform.localScale = new Vector3(1, 1, 1);
-        }
+            move.x = Input.GetAxis("Horizontal") * Time.deltaTime * moveSpeed;
+            if (move.x>0)
+            {
+                transform.localScale = new Vector3(1, 1, 1);
+            }
 
-        if (move.x<0)
-        {
-            transform.localScale = new Vector3(-1, 1, 1);
-        }
-        transform.Translate(move,Space.Self);
-        if (transform.position.x<leftBorder)
-        {
-            transform.position = new Vector3(rightBorder, transform.position.y, transform.position.z);
-        }
-        if (transform.position.x>rightBorder)
-        {
-            transform.position = new Vector3(leftBorder, transform.position.y, transform.position.z);
+            if (move.x<0)
+            {
+                transform.localScale = new Vector3(-1, 1, 1);
+            }
+            transform.Translate(move,Space.Self);
+            if (transform.position.x<leftBorder)
+            {
+                transform.position = new Vector3(rightBorder, transform.position.y, transform.position.z);
+            }
+            if (transform.position.x>rightBorder)
+            {
+                transform.position = new Vector3(leftBorder, transform.position.y, transform.position.z);
+            }
         }
     }
 }
