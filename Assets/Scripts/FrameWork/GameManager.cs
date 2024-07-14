@@ -27,6 +27,8 @@ public class GameManager : MonoSingleton<GameManager>
     private int coin;
     private int score;
     public Transform bulletPos;
+
+    
     public int Coin
     {
         get
@@ -68,6 +70,8 @@ public class GameManager : MonoSingleton<GameManager>
         for (int i = 0; i < initialSize; i++)
         {
              GenerateTile();
+             GenerateItem();
+             GenerateEnemy();
         }
     }
 
@@ -122,6 +126,45 @@ public class GameManager : MonoSingleton<GameManager>
                 break;
             default:
                 break;
+        }
+    }
+
+    void GenerateItem()
+    {
+        
+        
+        float rand = Random.Range(0f, 1f);
+        if (rand<advance.itemProbability)
+        {
+            GameObject randGo = null;
+            while (true)
+            {
+                randGo = transform.GetChild(Random.Range(0, transform.childCount)).gameObject;
+                if (randGo.GetComponent<Tile>().tileType<4&& randGo.transform.position.y>5f)
+                {
+                    break;
+                }
+            }
+            GameObject go = GetInactiveObject(ObjectType.Item);
+            go.name = Random.Range(0, 2).ToString();
+            go.SetActive(true);
+            go.transform.position = randGo.transform.position+new Vector3(0,.5f,0);
+        }
+    }
+
+    void GenerateEnemy()
+    {
+        float rand = Random.Range(0f, 1f);
+        if (rand<advance.enemyProbability)
+        {
+            
+            float left = Camera.main.ViewportToWorldPoint(new Vector2(0,0)).x;
+            float right = Camera.main.ViewportToWorldPoint(new Vector2(1,0)).x;
+            Vector2 pos=new Vector2(Random.Range(left+1f,right-1f),currentY);
+            GameObject go = GetInactiveObject(ObjectType.Enemy);
+            go.name = Random.Range(0, 3).ToString();
+            go.SetActive(true);
+            go.transform.position = pos;
         }
     }
 
@@ -280,6 +323,8 @@ public class GameManager : MonoSingleton<GameManager>
         if (gameState!=GameState.Gameover)
         {
             GenerateTile();
+            GenerateItem();
+            GenerateEnemy();
             //添加道具
             //难度曲线
             //分数

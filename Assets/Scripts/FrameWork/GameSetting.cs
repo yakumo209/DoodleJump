@@ -61,4 +61,7 @@ public class GameSetting
     public SpringTile springTile;
     public MovingHorizontally movingHorizontally;
     public MovingVertiacally movingVertiacally;
+    public float itemProbability;
+    public float coinProbability;
+    public float enemyProbability;
 }
