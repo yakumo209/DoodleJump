@@ -44,8 +44,9 @@ public class GameManager : MonoSingleton<GameManager>
         GameObject go = GetInactiveObject(ObjectType.Tile);
         float rand = Random.Range(0, totalSum);
         int randNum = SetTileByRandomNumber(rand);
-
-        Vector2 pos=new Vector2(Random.Range(-4.5f,4.5f),currentY);
+        float left = Camera.main.ViewportToWorldPoint(new Vector2(0,0)).x;
+        float right = Camera.main.ViewportToWorldPoint(new Vector2(1,0)).x;
+        Vector2 pos=new Vector2(Random.Range(left+1f,right-1f),currentY);
         
         switch (randNum)
         {
