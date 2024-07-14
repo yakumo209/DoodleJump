@@ -23,7 +23,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void Jump(float x)
+    public void Jump(float x)
     {
         GetComponent<Rigidbody2D>().velocity=Vector2.zero;
         GetComponent<Rigidbody2D>().AddForce(new Vector2(0,12*x),ForceMode2D.Impulse);
