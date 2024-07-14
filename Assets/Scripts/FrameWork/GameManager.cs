@@ -16,10 +16,41 @@ public class GameManager : MonoSingleton<GameManager>
     private float totalSum;
     private float currentY = -4.3f;
     public GameObject tilePrefab;
+    public GameObject coinPrefab;
+    public GameObject bulletPrefab;
+    public GameObject enemyPrefab;
+    public GameObject itemPrefab;
     public GameSetting advance;
     public GameObject floor;
     public GameState gameState = GameState.Paused;
-    
+    public Transform parent;
+    private int coin;
+    private int score;
+    public Transform bulletPos;
+    public int Coin
+    {
+        get
+        {
+            return coin;
+        }
+        set
+        {
+            coin = value;
+        }
+    }
+
+    public int Score
+    {
+        get
+        {
+            return score;
+        }
+
+        set
+        {
+            score = value;
+        }
+    }
     protected override void Awake()
     {
         base.Awake();
@@ -29,7 +60,10 @@ public class GameManager : MonoSingleton<GameManager>
     {
         GetAllWeight();
         GenerateTilePool();
-        print(totalSum);
+        GenerateCoinPool();
+        GenerateBulletPool();
+        GenerateEnemyPool();
+        GenerateItemPool();
         //generate tile
         for (int i = 0; i < initialSize; i++)
         {
@@ -124,6 +158,47 @@ public class GameManager : MonoSingleton<GameManager>
             return -1;
         }
     }
+    
+    private void GenerateItemPool()
+    {
+        for (int i = 0; i < initialSize; i++)
+        {
+            GameObject go1 = Instantiate(itemPrefab, parent);
+            go1.SetActive(false);
+            go1.name = i.ToString();
+            itemPool.Enqueue(go1);
+        }
+    }
+    private void GenerateCoinPool()
+    {
+        for (int i = 0; i < initialSize; i++)
+        {
+            GameObject go1 = Instantiate(coinPrefab, parent);
+            go1.SetActive(false);
+            go1.name = i.ToString();
+            coinPool.Enqueue(go1);
+        }
+    }
+    private void GenerateEnemyPool()
+    {
+        for (int i = 0; i < initialSize; i++)
+        {
+            GameObject go1 = Instantiate(enemyPrefab, parent);
+            go1.SetActive(false);
+            go1.name = i.ToString();
+            enemyPool.Enqueue(go1);
+        }
+    }
+    private void GenerateBulletPool()
+    {
+        for (int i = 0; i < initialSize; i++)
+        {
+            GameObject go1 = Instantiate(bulletPrefab, parent);
+            go1.SetActive(false);
+            go1.name = i.ToString();
+            bulletPool.Enqueue(go1);
+        }
+    }
     private void GenerateTilePool()
     {
         for (int i = 0; i < initialSize; i++)
@@ -151,7 +226,11 @@ public class GameManager : MonoSingleton<GameManager>
                 return enemyPool.Dequeue();
                 break;
             case ObjectType.Bullet:
-                return bulletPool.Dequeue();
+                GameObject go = bulletPool.Dequeue();
+                go.SetActive(true);
+
+                go.transform.position = bulletPos.position;
+                return go;
                 break;
             default:
                 return null;

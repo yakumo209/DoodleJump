@@ -8,11 +8,14 @@ public class Player : MonoBehaviour
     public float rightBorder;
     public float leftBorder;
     public float moveSpeed = 5f;
-
+    private SpriteRenderer sp;
+    public Sprite fire;
+    public Sprite normal;
     private void Start()
     {
         leftBorder = Camera.main.ViewportToWorldPoint(new Vector3(0, 0)).x;
         rightBorder = Camera.main.ViewportToWorldPoint(new Vector3(1, 0)).x;
+        sp = GetComponent<SpriteRenderer>();
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -57,6 +60,16 @@ public class Player : MonoBehaviour
             if (transform.position.x>rightBorder)
             {
                 transform.position = new Vector3(leftBorder, transform.position.y, transform.position.z);
+            }
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                GameManager.Instance.GetInactiveObject(ObjectType.Bullet);
+                sp.sprite = fire;
+            }
+            if (Input.GetMouseButtonUp(0))
+            {
+                sp.sprite = normal;
             }
         }
     }
