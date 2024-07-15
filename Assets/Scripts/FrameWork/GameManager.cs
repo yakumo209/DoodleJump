@@ -28,7 +28,7 @@ public class GameManager : MonoSingleton<GameManager>
     private int score;
     public Transform bulletPos;
 
-    
+    private float lastTime;
     public int Coin
     {
         get
@@ -72,6 +72,7 @@ public class GameManager : MonoSingleton<GameManager>
              GenerateTile();
              GenerateItem();
              GenerateEnemy();
+             GenerateCoin();
         }
     }
 
@@ -168,6 +169,32 @@ public class GameManager : MonoSingleton<GameManager>
         }
     }
 
+
+    void GenerateCoin()
+    {
+        float rand = Random.Range(0f, 1f);
+        if (rand<advance.coinProbability)
+        {
+            
+            float left = Camera.main.ViewportToWorldPoint(new Vector2(0,0)).x;
+            float right = Camera.main.ViewportToWorldPoint(new Vector2(1,0)).x;
+            Vector2 pos=new Vector2(Random.Range(left+1f,right-1f),currentY);
+            GameObject go = GetInactiveObject(ObjectType.Coin);
+            go.SetActive(true);
+            go.transform.position = pos;
+        }
+    }
+
+    void IncreaseDifficulty(float time)
+    {
+        if (Time.time-lastTime>time)
+        {
+            lastTime = Time.time;
+            advance.enemyProbability += 0.01f;
+            print("Increased");
+        }
+    }
+    
     int SetTileByRandomNumber(float num)
     {
         if (num<=advance.normalTile.weight)
@@ -325,6 +352,9 @@ public class GameManager : MonoSingleton<GameManager>
             GenerateTile();
             GenerateItem();
             GenerateEnemy();
+            GenerateCoin();
+            IncreaseDifficulty(5);
+            score += 5;
             //添加道具
             //难度曲线
             //分数
